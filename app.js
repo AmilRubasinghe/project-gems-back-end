@@ -59,5 +59,5 @@ Cookies.set("myCookie", "cookieValue", {
 // Start the server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Gems Server is running on port ${PORT}`);
 });
