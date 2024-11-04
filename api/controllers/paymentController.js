@@ -2,34 +2,34 @@ require('dotenv').config(); // Load environment variables from .env file
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Notification = require("../schemas/notificationSchema");
 const Booking = require("../schemas/bookingSchema");
+const { APPLICATION } = require("../../config/config");
 
 exports.createCheckoutSession = async (req, res) => {
   const { netTotal, bookingId } = req.body;
 
-  if (!netTotal || typeof netTotal !== 'number') {
+  if (!netTotal || typeof netTotal !== "number") {
     return res.status(400).json({ error: "Invalid netTotal amount" });
   }
 
   try {
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
-            currency: 'usd',
+            currency: "usd",
             product_data: {
-              name: 'Total Invoice Amount',
+              name: "Total Invoice Amount",
             },
             unit_amount: netTotal * 100, // Stripe expects the amount in cents
           },
           quantity: 1,
         },
       ],
-      mode: 'payment',
-      success_url: "http://localhost:5173/paymentSuccess/" + bookingId,
-      cancel_url: "http://localhost:5173/paymentcancel",
+      mode: "payment",
+      success_url: `${APPLICATION.CLIENT_URL}/paymentSuccess/` + bookingId,
+      cancel_url: `${APPLICATION.CLIENT_URL}/paymentcancel`,
     });
-
 
     res.json({ id: session.id });
   } catch (error) {

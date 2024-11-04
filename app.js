@@ -13,18 +13,22 @@ const notificationRoutes = require("./api/routes/notificationRoutes");
 const chatbotRoutes = require("./api/routes/chatbotRoutes");
 const paymentRoutes = require("./api/routes/paymentRoutes");
 const Cookies = require('js-cookie');
+const { APPLICATION } = require("./config/config");
 
 app.use(bodyParser.json());
 app.use(cors());
 
 // Serve static files from the "uploads" directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /// atlas
 mongoose
-.connect("mongodb+srv://sfrafri:vrQAf177sh0CxBLC@cluster0.rnqxi.mongodb.net/autocare?retryWrites=true&w=majority&appName=Cluster0")
-.then(() => console.log("Connected to MongoDB"))
-.catch((error) => console.error("Failed to connect to MongoDB", error));
+  .connect(APPLICATION.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.error("Failed to connect to MongoDB", error));
 
 // Use routes
 app.use("/api", adminRoutes);
@@ -37,23 +41,23 @@ app.use("/api", paymentRoutes);
 app.use("/api", inventoryRoutes);
 app.use("/api", require("./api/routes/mechanicRoutes"));
 
-app.get('/set-cookie', (req, res) => {
-  res.cookie('myCookie', 'cookieValue', {
+app.get("/set-cookie", (req, res) => {
+  res.cookie("myCookie", "cookieValue", {
     httpOnly: true,
     secure: true,
-    sameSite: 'Lax', // or 'Strict' or 'None'
+    sameSite: "Lax", // or 'Strict' or 'None'
   });
-  res.send('Cookie has been set');
+  res.send("Cookie has been set");
 });
 
-Cookies.set('myCookie', 'cookieValue', {
+Cookies.set("myCookie", "cookieValue", {
   expires: 7, // 7 days
   secure: true,
-  sameSite: 'Lax', // or 'Strict' or 'None'
+  sameSite: "Lax", // or 'Strict' or 'None'
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
